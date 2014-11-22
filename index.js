@@ -109,7 +109,9 @@ function ObservStruct(struct, opts, lv) {
             }
         })
     })
-    deepSet(obs, opts, lv);
+    if (deepSet) {
+      deepSet(obs, opts, lv);
+    }
 
     obs._type = "observ-struct"
     obs._version = "5"

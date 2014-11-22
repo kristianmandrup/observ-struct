@@ -1,17 +1,17 @@
-module.exports = Scheduler;
+function setNonEnumerable(object, key, value) {
+    Object.defineProperty(object, key, {
+        value: value,
+        writable: true,
+        configurable: true,
+        enumerable: false
+    })
+}
 
-
-// TODO: make DRY!!! the scheduler is the same for all observable immutables.
-// Better to put it in observ and be reused for -array and -struct ;)
-
-// customize to fit your scenario (and machine speed of client)
-Scheduler.prototype.maxOpsPerFrame = 500;
-
-var Scheduler = function(obj, opts) {
-  opts = opts || {maxOpsPerFrame: Scheduler.maxOpsPerFrame || 500}
+module.exports = function(obj, opts) {
+  opts = opts || {maxOpsPerFrame: StructScheduler.maxOpsPerFrame || 500}
 
   outer = {
-    obj: obj
+    obj: obj,
     maxOpsPerFrame: opts.maxOpsPerFrame,
     executeScheduled: function() {
       this.scheduled.execute();
@@ -32,10 +32,10 @@ var Scheduler = function(obj, opts) {
     ops: [[]],
     frameIndex: function() {
       return this.ops.length;
-    }
+    },
     anyOps: function() {
       return this.ops.length > 0;
-    }
+    },
     execute: function() {
       if (!this.anyOps())
         return;
@@ -54,13 +54,4 @@ var Scheduler = function(obj, opts) {
   }
   outer.scheduled = scheduled;
   return outer;
-}
-
-function setNonEnumerable(object, key, value) {
-    Object.defineProperty(object, key, {
-        value: value,
-        writable: true,
-        configurable: true,
-        enumerable: false
-    })
 }

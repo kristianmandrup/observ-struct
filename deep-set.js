@@ -1,7 +1,7 @@
 module.exports = deepSet
 
 ObservArray   = require('observ-array')
-ObservStruct  = require('observ-struct')
+ObservStruct  = require('./index')
 Observ        = require('observ')
 
 function deepSet(obj, opts, lv) {
