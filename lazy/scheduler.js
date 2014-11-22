@@ -24,13 +24,14 @@ module.exports = function(obj, opts) {
     schedule: function(mutator) {
       var frameIndex = this.scheduled.frameIndex();
       var max = this.maxOpsPerFrame;
-      var ops = this.scheduled.ops[frameIndex];
+      var ops = this.scheduled.ops;
+      var frameOps = ops[frameIndex] || [];
 
-      if (ops.length < max) {
-        ops.push(mutator);
-        this.onScheduled(ops)
+      if (frameOps.length < max) {
+        frameOps.push(mutator);
+        this.onScheduled(frameOps)
       }
-      return ops;
+      return frameOps;
     },
     // hook: override to log scheduled operations as they are added
     onScheduled: function(ops) {
@@ -65,15 +66,15 @@ module.exports = function(obj, opts) {
       // console.log('newState', newState)
 
       var obj = this.obj
-      // Object.keys(newState).forEach( function(key) {
-      //
-      //     // TODO: add set and _set to blacklist as well?
-      //     if (!blackList.hasOwnProperty(key)) {
-      //       // console.log('set', key, newState[key])
-      //       obj[key] = newState[key]
-      //     }
-      // })
-      this.obj = extend(this.obj, newState)
+      Object.keys(newState).forEach( function(key) {
+
+          // TODO: add set and _set to blacklist as well?
+          if (!blackList.hasOwnProperty(key)) {
+            // console.log('set', key, newState[key])
+            obj[key] = newState[key]
+          }
+      })
+      // this.obj = extend(this.obj, newState)
       this.obj._set(newState)
     }
   };
