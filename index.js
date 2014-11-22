@@ -1,6 +1,8 @@
 var Observ = require("observ")
 var extend = require("xtend")
 
+var deepSet = require("./deep-set")
+
 var blackList = {
     "length": "Clashes with `Function.prototype.length`.\n",
     "name": "Clashes with `Function.prototype.name`.\n",
@@ -9,15 +11,6 @@ var blackList = {
     "_version": "_version is reserved key of observ-struct.\n"
 }
 var NO_TRANSACTION = {}
-
-function setNonEnumerable(object, key, value) {
-    Object.defineProperty(object, key, {
-        value: value,
-        writable: true,
-        configurable: true,
-        enumerable: false
-    })
-}
 
 /* ObservStruct := (Object<String, Observ<T>>) =>
     Object<String, Observ<T>> &
@@ -28,7 +21,31 @@ function setNonEnumerable(object, key, value) {
 */
 module.exports = ObservStruct
 
+
+function trackDiff(value) {
+    if (currentTransaction === value) {
+        return _set(value)
+    }
+
+    var newState = extend(value)
+    setNonEnumerable(newState, "_diff", value)
+    _set(newState)
+}
+
+function setNonEnumerable(object, key, value) {
+    Object.defineProperty(object, key, {
+        value: value,
+        writable: true,
+        configurable: true,
+        enumerable: false
+    })
+}
+
 function ObservStruct(struct, opts, lv) {
+    opts = opts || {}
+
+    var setItem = opts.set || trackDiff;
+
     var keys = Object.keys(struct)
 
     var initialState = {}
@@ -72,15 +89,7 @@ function ObservStruct(struct, opts, lv) {
         }
     })
     var _set = obs.set
-    obs.set = function trackDiff(value) {
-        if (currentTransaction === value) {
-            return _set(value)
-        }
-
-        var newState = extend(value)
-        setNonEnumerable(newState, "_diff", value)
-        _set(newState)
-    }
+    obs.set = setItem
 
     obs(function (newState) {
         if (currentTransaction === newState) {
@@ -100,27 +109,7 @@ function ObservStruct(struct, opts, lv) {
             }
         })
     })
-
-    // we need to implement deep for observ-struct as well ;)
-    if (!!opts.deep) {
-      lv = lv || 0;
-      opts.maxLv = opts.maxLv || 6;
-      if (opts.maxLv < lv) {
-        Object.keys(obj).forEach(function(key) {
-          var value = obs[key];
-          if (typeof value !== 'function') {
-            lv = lv + 1
-            if (value instanceof Array) {
-              ObservArray(value, opts, lv);
-            } else if (typeof value === 'object') {
-              ObservStruct(value, opts, lv);
-            } else {
-              Observ(value);
-            }
-          }
-        });
-      }
-    }
+    deepSet(obs, opts, lv);
 
     obs._type = "observ-struct"
     obs._version = "5"
