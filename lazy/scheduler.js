@@ -22,7 +22,6 @@ module.exports = function(obj, opts) {
       this.scheduled.execute();
     },
     schedule: function(mutator) {
-
       var frameIndex = this.scheduled.frameIndex();
       var max = this.maxOpsPerFrame;
       var ops = this.scheduled.ops[frameIndex];
@@ -66,14 +65,15 @@ module.exports = function(obj, opts) {
       // console.log('newState', newState)
 
       var obj = this.obj
-      Object.keys(newState).forEach( function(key) {
-
-          // TODO: add set and _set to blacklist as well?
-          if (!blackList.hasOwnProperty(key)) {
-            // console.log('set', key, newState[key])
-            obj[key] = newState[key]
-          }
-      })
+      // Object.keys(newState).forEach( function(key) {
+      //
+      //     // TODO: add set and _set to blacklist as well?
+      //     if (!blackList.hasOwnProperty(key)) {
+      //       // console.log('set', key, newState[key])
+      //       obj[key] = newState[key]
+      //     }
+      // })
+      this.obj = extend(this.obj, newState)
       this.obj._set(newState)
     }
   };

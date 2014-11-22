@@ -11,14 +11,11 @@ function lazySet(scheduler) {
 }
 
 function setter(value) {
-  console.log('setter', value)
   return function(state) {
-    console.log('set via state', state, value)
     return set(state, value);
   }
 }
 
 function set(state, value) {
-  console.log('set - extend', state, value)
   return extend(state, value);
 }
