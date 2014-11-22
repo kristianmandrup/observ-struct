@@ -7,30 +7,14 @@ module.exports = Scheduler;
 // customize to fit your scenario (and machine speed of client)
 Scheduler.prototype.maxOpsPerFrame = 500;
 
-var Scheduler = function(opts) {
+var Scheduler = function(obj, opts) {
   opts = opts || {maxOpsPerFrame: Scheduler.maxOpsPerFrame || 500}
 
-  return {
+  outer = {
+    obj: obj
     maxOpsPerFrame: opts.maxOpsPerFrame,
     executeScheduled: function() {
       this.scheduled.execute();
-    }
-    scheduled: {
-      ops: [[]],
-      frameIndex: function() {
-        return this.ops.length;
-      }
-      anyOps: function() {
-        return this.ops.length > 0;
-      }
-      execute: function() {
-        if (!this.anyOps())
-          return;
-        // take latest framebuffer and play it
-        this.ops.shift().forEach(function(op) {
-          op();
-        })
-      }
     },
     schedule: function(mutator) {
       var ops = this.scheduled.ops[this.scheduled.frameIndex];
@@ -42,4 +26,41 @@ var Scheduler = function(opts) {
       return ops;
     }
   }
+
+  scheduled = {
+    obj: obj,
+    ops: [[]],
+    frameIndex: function() {
+      return this.ops.length;
+    }
+    anyOps: function() {
+      return this.ops.length > 0;
+    }
+    execute: function() {
+      if (!this.anyOps())
+        return;
+      // take latest framebuffer and play it
+      if (currentTransaction === value) {
+          return this.obj._set(value)
+      }
+
+      var newState = this.obj;
+      this.ops.shift().forEach(function(op) {
+        newState = op(newState);
+      })
+      setNonEnumerable(newState, "_diff", value)
+      this._set(newState)
+    }
+  }
+  outer.scheduled = scheduled;
+  return outer;
+}
+
+function setNonEnumerable(object, key, value) {
+    Object.defineProperty(object, key, {
+        value: value,
+        writable: true,
+        configurable: true,
+        enumerable: false
+    })
 }

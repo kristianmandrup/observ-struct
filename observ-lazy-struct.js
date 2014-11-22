@@ -9,7 +9,7 @@ var ObservStruct = require('./index')
 function ObservLazyStruct(struct, opts, lv) {
   opts = opts || {}
 
-  opts.set = lazySet;
+  opts.set = lazySet(struct);
 
   var obj = ObservStruct(struct, opts, lv);
   obj.scheduler = new Scheduler(obj, opts);
