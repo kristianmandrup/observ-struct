@@ -90,6 +90,7 @@ function ObservStruct(struct, opts, lv) {
     })
     var _set = obs.set
     obs.set = setItem
+    obs._set = _set
 
     obs(function (newState) {
         if (currentTransaction === newState) {
