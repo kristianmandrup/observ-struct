@@ -1,15 +1,8 @@
 var Observ = require("observ")
 var extend = require("xtend")
 
-var deepSet = require("./deep-set")
-
-var blackList = {
-    "length": "Clashes with `Function.prototype.length`.\n",
-    "name": "Clashes with `Function.prototype.name`.\n",
-    "_diff": "_diff is reserved key of observ-struct.\n",
-    "_type": "_type is reserved key of observ-struct.\n",
-    "_version": "_version is reserved key of observ-struct.\n"
-}
+var deepSet   = require("./deep-set")
+var blackList = require("./blacklist")
 var NO_TRANSACTION = {}
 
 /* ObservStruct := (Object<String, Observ<T>>) =>

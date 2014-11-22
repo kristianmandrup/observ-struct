@@ -10,6 +10,7 @@ function setNonEnumerable(object, key, value) {
 var StructScheduler = require('./struct-scheduler')
 
 var extend = require('xtend')
+var blackList = require("../blacklist")
 
 module.exports = function(obj, opts) {
   opts = opts || {}
@@ -62,7 +63,17 @@ module.exports = function(obj, opts) {
         newState = op(newState);
       })
       setNonEnumerable(this.obj, "_diff", newState)
-      console.log('newState', newState)
+      // console.log('newState', newState)
+
+      var obj = this.obj
+      Object.keys(newState).forEach( function(key) {
+
+          // TODO: add set and _set to blacklist as well?
+          if (!blackList.hasOwnProperty(key)) {
+            // console.log('set', key, newState[key])
+            obj[key] = newState[key]
+          }
+      })
       this.obj._set(newState)
     }
   };
