@@ -9,6 +9,8 @@ function setNonEnumerable(object, key, value) {
 
 var StructScheduler = require('./struct-scheduler')
 
+var extend = require('xtend')
+
 module.exports = function(obj, opts) {
   opts = opts || {}
   opts.maxOpsPerFrame = opts.maxOpsPerFrame || StructScheduler.maxOpsPerFrame || 500
@@ -55,13 +57,12 @@ module.exports = function(obj, opts) {
       //     return this.obj._set(value)
       // }
 
-      var newState = this.obj;
-      console.log('newState', newState)
+      var newState = extend({}, this.obj)
       this.ops.shift().forEach(function(op) {
         newState = op(newState);
-        console.log('newState', newState)
       })
-      // setNonEnumerable(newState, "_diff", value)
+      setNonEnumerable(this.obj, "_diff", newState)
+      console.log('newState', newState)
       this.obj._set(newState)
     }
   };

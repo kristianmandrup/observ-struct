@@ -44,8 +44,6 @@ function setNonEnumerable(object, key, value) {
 function ObservStruct(struct, opts, lv) {
     opts = opts || {}
 
-    var setItem = opts.set || trackDiff;
-
     var keys = Object.keys(struct)
 
     var initialState = {}
@@ -89,8 +87,16 @@ function ObservStruct(struct, opts, lv) {
         }
     })
     var _set = obs.set
-    obs.set = setItem
     obs._set = _set
+    obs.set = function trackDiff(value) {
+        if (currentTransaction === value) {
+            return _set(value)
+        }
+
+        var newState = extend(value)
+        setNonEnumerable(newState, "_diff", value)
+        _set(newState)
+    }
 
     obs(function (newState) {
         if (currentTransaction === newState) {
