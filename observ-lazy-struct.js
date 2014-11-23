@@ -9,10 +9,8 @@ function ObservLazyStruct(struct, opts, lv) {
   opts = opts || {}
   var obj = ObservStruct(struct, opts, lv);
 
-  console.log('observable', obj);
-
   obj.scheduler = new structScheduler.create(obj, opts);
   // override set function
-  obj.set = lazySet(obj.scheduler);
+  obj.lazySet = lazySet(obj.scheduler);
   return obj;
 }

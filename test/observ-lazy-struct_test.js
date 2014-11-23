@@ -19,8 +19,8 @@ test("calling lazyStruct returns observable: function", function (assert) {
     var obj = lazyStruct({x: 1});
 
     assert.equal(obj.x, 1)
-    obj.set({y:2});
-    obj.set({z:3});
+    obj.lazySet({y:2});
+    obj.lazySet({z:3});
 
     var scheduler = obj.scheduler;
     assert.equal(typeof scheduler, "object")

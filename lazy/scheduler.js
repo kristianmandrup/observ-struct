@@ -58,7 +58,7 @@ module.exports = function(obj, opts) {
       //     return this.obj._set(value)
       // }
 
-      var newState = extend({}, this.obj)
+      var newState = {} // extend({}, this.obj)
       this.ops.shift().forEach(function(op) {
         newState = op(newState);
       })
@@ -74,8 +74,8 @@ module.exports = function(obj, opts) {
             obj[key] = newState[key]
           }
       })
-      // this.obj = extend(this.obj, newState)
-      this.obj._set(newState)
+      // newState = extend(this.obj, newState)
+      this.obj.set(newState)
     }
   };
   outer.scheduled = scheduled;
