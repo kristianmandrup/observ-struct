@@ -5,6 +5,9 @@ var deepSet   = require("./deep-set")
 var blackList = require("./blacklist")
 var NO_TRANSACTION = {}
 
+var isObservable  = require('observ/is-observable')
+var isComputed    = require('observ/is-computed')
+
 /* ObservStruct := (Object<String, Observ<T>>) =>
     Object<String, Observ<T>> &
         Observ<Object<String, T> & {
@@ -112,6 +115,17 @@ function ObservStruct(struct, opts, lv) {
     if (deepSet) {
       deepSet(obs, opts, lv);
     }
+
+    // add basic introspection methods
+    obs.isObservable = isObservable
+    obs.isComputed   = isComputed
+
+    var lazyness  = require('./lazyness')
+    // add basic lazyness methods
+    Object.keys(lazyness).forEach(function(key) {
+      obs[key] = lazyness[key];
+    })
+    obs._lazy = false
 
     obs._type = "observ-struct"
     obs._version = "5"
