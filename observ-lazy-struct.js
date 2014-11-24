@@ -1,6 +1,6 @@
 module.exports = ObservLazyStruct
 
-var scheduler  = require("./lazy/struct-scheduler.js")
+var scheduler  = require("./lazy/scheduler.js")
 var lazySet    = require('./lazy/lazy-set')
 
 var ObservStruct = require('./index')

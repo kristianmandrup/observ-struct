@@ -4,8 +4,6 @@ module.exports = {
   unlazy: unlazy
 }
 
-var scheduler   = require("./lazy/struct-scheduler.js")
-
 var objMethods = ['set']
 
 var lazyApi = {}
@@ -26,6 +24,7 @@ function capitalise(string)
 
 function lazy(opts) {
   opts = opts || {}
+  var scheduler   = require("./lazy/scheduler.js")
   var schedulerBuilder = opts.schedulerBuilder || scheduler.create;
   this.scheduler   = new schedulerBuilder(this, opts);
   this.updateNow   = updateNow;
