@@ -53,7 +53,7 @@ test("calling lazyStruct returns observable: function", function (assert) {
     assert.equal(scheduler.scheduled.anyOps(), true)
     assert.equal(scheduler.scheduled.numOps(), 2)
 
-    scheduler.executeScheduled();
+    scheduler.executeNextScheduled();
     // console.log('OBJECT', obj);
     assert.equal(obj.x, 1)
     assert.equal(obj.y, 2)

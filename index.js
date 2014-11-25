@@ -120,7 +120,7 @@ function ObservStruct(struct, opts, lv) {
     obs.isObservable = isObservable
     obs.isComputed   = isComputed
 
-    var lazyness  = require('./lazyness')
+    var lazyness  = require('./lazy/lazyness')
     // add basic lazyness methods
     Object.keys(lazyness).forEach(function(key) {
       obs[key] = lazyness[key];

@@ -1,5 +1,3 @@
-var execute = require('./execute')
-
 module.exports = {
   outer: {
     schedule: function(mutator) {
@@ -15,6 +13,6 @@ module.exports = {
     }
   },
   scheduled: {
-    execute: execute
+    executeNext: require('./execute')
   }
 }

@@ -13,7 +13,6 @@ module.exports = function() {
     newState = op(newState);
   })
   setNonEnumerable(this.obj, "_diff", newState)
-  // console.log('newState', newState)
 
   var obj = this.obj
 
@@ -34,5 +33,3 @@ function setNonEnumerable(object, key, value) {
         enumerable: false
     })
 }
-
-// var extend = require('xtend')

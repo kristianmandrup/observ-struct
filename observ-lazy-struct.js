@@ -1,16 +1,7 @@
-module.exports = ObservLazyStruct
+module.exports = ObservLazy
 
-var scheduler  = require("./lazy/scheduler.js")
-var lazySet    = require('./lazy/lazy-set')
+var Observ = require('./index')
 
-var ObservStruct = require('./index')
-
-function ObservLazyStruct(struct, opts, lv) {
-  opts = opts || {}
-  var obs = ObservStruct(struct, opts, lv);
-  var schedulerBuilder = opts.schedulerBuilder || scheduler.create;
-
-  obs.scheduler = new schedulerBuilder(obs, opts);
-  obs.lazy();
-  return obs;
+function ObservLazy(obj, opts, lv) {
+  return Observ(obj, opts, lv).lazy();
 }
